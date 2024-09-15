@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class EnemyContoller : MonoBehaviour
@@ -12,15 +13,18 @@ public class EnemyContoller : MonoBehaviour
     private float nextAttackTime = 0f; // Time until the next attack is allowed
 
     private Animator animator; // Reference to the Animator component
+    private SpriteRenderer spriteRenderer;
     private bool isWalking = false; // Is the enemy walking?
 
     private void Start()
     {
         // Get the Animator component attached to the enemy
         animator = GetComponent<Animator>();
-    }
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
-    private void Update()
+}
+
+private void Update()
     {
         // Calculate the distance to the player along the X-axis only
         float distanceToPlayer = Mathf.Abs(player.position.x - transform.position.x);
@@ -50,7 +54,7 @@ public class EnemyContoller : MonoBehaviour
     private void FollowPlayer()
     {
         // Determine the direction to move: right (1) or left (-1)
-        float direction = player.position.x > transform.position.x ? 1f : -1f;
+        float direction = player.position.x < transform.position.x ? -1f : 1f;
 
         // Move the enemy along the X-axis towards the player
         transform.Translate(Vector2.right * direction * moveSpeed * Time.deltaTime);
@@ -66,10 +70,14 @@ public class EnemyContoller : MonoBehaviour
         if (direction > 0)
         {
             transform.localScale = new Vector3(1, 1, 1); // Facing right
+            spriteRenderer.flipX = false;
+
         }
         else
         {
             transform.localScale = new Vector3(-1, 1, 1); // Facing left
+            spriteRenderer.flipX = true;
+
         }
     }
 
@@ -91,7 +99,7 @@ public class EnemyContoller : MonoBehaviour
         nextAttackTime = Time.time + attackCooldown;
         Debug.Log("Attacks Player");
         // Delay the reset of the attack state to simulate attack duration
-        Invoke("ResetAttack", 0.5f); // You can adjust the delay to match the attack animation length
+        Invoke("ResetAttack", 0.250f); // You can adjust the delay to match the attack animation length
     }
 
     private void ResetAttack()
