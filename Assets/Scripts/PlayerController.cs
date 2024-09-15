@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     private Animator animator;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer; // SpriteRenderer referansý
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
 
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // SpriteRenderer referansýný al
 
         // Hitbox'larý baþlangýçta kapalý tutuyoruz
         punchHitbox.SetActive(false);
@@ -40,6 +42,9 @@ public class PlayerController : MonoBehaviour
 
         if (move != 0)
         {
+            // Karakter yönünü ayarla
+            spriteRenderer.flipX = move < 0;
+
             transform.Translate(new Vector2(move * moveSpeed * Time.deltaTime, 0));
             animator.SetBool("isWalking", true);
         }
